@@ -123,27 +123,3 @@ func (sc *SlackCat) postMsgs(msglines chan string, noop bool, pre bool) {
                 }
         }
 }
-
-func (sc *SlackCat) postFile(filePath, fileName string, noop bool) {
-	//default to timestamp for filename
-	if fileName == "" {
-		fileName = strconv.FormatInt(time.Now().Unix(), 10)
-	}
-
-	if noop {
-		output(fmt.Sprintf("skipping upload of file %s to %s", fileName, sc.channelName))
-		return
-	}
-
-	start := time.Now()
-	err := sc.api.FilesUpload(&slack.FilesUploadOpt{
-		Filepath: filePath,
-		Filename: fileName,
-		Title:    fileName,
-		Channels: []string{sc.channelId},
-	})
-	failOnError(err, "error uploading file to Slack", true)
-	duration := strconv.FormatFloat(time.Since(start).Seconds(), 'f', 3, 64)
-	output(fmt.Sprintf("file %s uploaded to %s (%ss)", fileName, sc.channelName, duration))
-	os.Exit(0)
-}

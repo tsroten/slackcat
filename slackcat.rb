@@ -1,5 +1,5 @@
 class Slackcat < Formula
-  desc "Simple command-line Utility to post snippets to Slack."
+  desc "Simple command-line Utility to post messages to Slack."
   homepage "https://github.com/vektorlab/slackcat"
   url "https://github.com/vektorlab/slackcat/archive/v0.6.tar.gz"
   version "0.6"

@@ -3,9 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
-	"path/filepath"
 
 	"github.com/codegangsta/cli"
 	"github.com/fatih/color"
@@ -23,19 +21,6 @@ func readIn(lines chan string, tee bool) {
 		}
 	}
 	close(lines)
-}
-
-func writeTemp(lines chan string) string {
-	tmp, err := ioutil.TempFile(os.TempDir(), "slackcat-")
-	failOnError(err, "unable to create tmpfile", false)
-
-	w := bufio.NewWriter(tmp)
-	for line := range lines {
-		fmt.Fprintln(w, line)
-	}
-	w.Flush()
-
-	return tmp.Name()
 }
 
 func output(s string) {
@@ -61,7 +46,7 @@ func exitErr(err error) {
 func main() {
 	app := cli.NewApp()
 	app.Name = "slackcat"
-	app.Usage = "redirect text and files to slack"
+	app.Usage = "redirect text to slack"
 	app.Version = version
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
@@ -70,7 +55,7 @@ func main() {
 		},
 		cli.BoolFlag{
 			Name:  "stream, s",
-			Usage: "Stream messages to Slack continuously instead of uploading a single snippet",
+			Usage: "Stream messages to Slack continuously",
 		},
 		cli.BoolFlag{
 			Name:  "pre, p",
@@ -78,7 +63,7 @@ func main() {
 		},
 		cli.BoolFlag{
 			Name:  "noop",
-			Usage: "Skip posting file to Slack. Useful for testing",
+			Usage: "Skip posting message to Slack. Useful for testing",
 		},
 		cli.BoolFlag{
 			Name:  "configure",
@@ -87,10 +72,6 @@ func main() {
 		cli.StringFlag{
 			Name:  "channel, c",
 			Usage: "Slack channel or group to post to",
-		},
-		cli.StringFlag{
-			Name:  "filename, n",
-			Usage: "Filename for upload. Defaults to current timestamp",
 		},
 	}
 
@@ -101,7 +82,6 @@ func main() {
 		}
 
 		token := readConfig()
-		fileName := c.String("filename")
 
 		if c.String("channel") == "" {
 			exitErr(fmt.Errorf("no channel provided!"))
@@ -110,41 +90,18 @@ func main() {
 		slackcat, err := newSlackCat(token, c.String("channel"))
 		failOnError(err, "Slack API Error", true)
 
-		if len(c.Args()) > 0 {
-			if c.Bool("stream") {
-				output("filepath provided, ignoring stream option")
-			}
-			filePath := c.Args()[0]
-			if fileName == "" {
-				fileName = filepath.Base(filePath)
-			}
-			slackcat.postFile(filePath, fileName, c.Bool("noop"))
-			os.Exit(0)
-		}
-
 		lines := make(chan string)
 		go readIn(lines, c.Bool("tee"))
 
 		if c.Bool("stream") {
-                        if c.String("filename") != "" {
-                                output("stream provided, ignoring filename option")
-                        }
 			output("starting stream")
 			go slackcat.addToStreamQ(lines)
 			go slackcat.processStreamQ(c.Bool("noop"), c.Bool("pre"))
 			go slackcat.trap()
 			select {}
-		} else if c.String("filename") == "" {
+                } else {
                         slackcat.postMsgs(lines, c.Bool("noop"), c.Bool("pre"))
 			os.Exit(0)
-                } else {
-                        if c.Bool("pre") {
-                                output("filename provided, ignoring preformat option")
-                        }
-                        filePath := writeTemp(lines)
-                        defer os.Remove(filePath)
-                        slackcat.postFile(filePath, fileName, c.Bool("noop"))
-                        os.Exit(0)
                 }
 	}
 
