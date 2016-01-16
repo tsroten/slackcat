@@ -25,7 +25,7 @@ func readIn(lines chan string, tee bool) {
 
 func output(s string) {
 	cyan := color.New(color.Bold).SprintFunc()
-	fmt.Printf("%s %s\n", cyan("slackcat"), s)
+	fmt.Printf("%s %s\n", cyan("slackecho"), s)
 }
 
 func failOnError(err error, msg string, appendErr bool) {
@@ -45,7 +45,7 @@ func exitErr(err error) {
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "slackcat"
+	app.Name = "slackecho"
 	app.Usage = "redirect text to slack"
 	app.Version = version
 	app.Flags = []cli.Flag{
@@ -67,7 +67,7 @@ func main() {
 		},
 		cli.BoolFlag{
 			Name:  "configure",
-			Usage: "Configure Slackcat via oauth",
+			Usage: "Configure Slackecho via oauth",
 		},
 		cli.StringFlag{
 			Name:  "channel, c",
@@ -87,7 +87,7 @@ func main() {
 			exitErr(fmt.Errorf("no channel provided!"))
 		}
 
-		slackcat, err := newSlackCat(token, c.String("channel"))
+		slackecho, err := newSlackEcho(token, c.String("channel"))
 		failOnError(err, "Slack API Error", true)
 
 		lines := make(chan string)
@@ -95,12 +95,12 @@ func main() {
 
 		if c.Bool("stream") {
 			output("starting stream")
-			go slackcat.addToStreamQ(lines)
-			go slackcat.processStreamQ(c.Bool("noop"), c.Bool("pre"))
-			go slackcat.trap()
+			go slackecho.addToStreamQ(lines)
+			go slackecho.processStreamQ(c.Bool("noop"), c.Bool("pre"))
+			go slackecho.trap()
 			select {}
                 } else {
-                        slackcat.postMsgs(lines, c.Bool("noop"), c.Bool("pre"))
+                        slackecho.postMsgs(lines, c.Bool("noop"), c.Bool("pre"))
 			os.Exit(0)
                 }
 	}
