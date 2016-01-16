@@ -61,7 +61,7 @@ func exitErr(err error) {
 func main() {
 	app := cli.NewApp()
 	app.Name = "slackcat"
-	app.Usage = "redirect a file to slack"
+	app.Usage = "redirect text and files to slack"
 	app.Version = version
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
@@ -73,8 +73,8 @@ func main() {
 			Usage: "Stream messages to Slack continuously instead of uploading a single snippet",
 		},
 		cli.BoolFlag{
-			Name:  "plain, p",
-			Usage: "Write messages as plain texts instead of code blocks",
+			Name:  "pre, p",
+			Usage: "Write messages as preformatted text instead of plaintext",
 		},
 		cli.BoolFlag{
 			Name:  "noop",
@@ -107,10 +107,6 @@ func main() {
 			exitErr(fmt.Errorf("no channel provided!"))
 		}
 
-		if !c.Bool("stream") && c.Bool("plain") {
-			exitErr(fmt.Errorf("'plain' flag requires 'stream' mode!"))
-		}
-
 		slackcat, err := newSlackCat(token, c.String("channel"))
 		failOnError(err, "Slack API Error", true)
 
@@ -130,17 +126,26 @@ func main() {
 		go readIn(lines, c.Bool("tee"))
 
 		if c.Bool("stream") {
+                        if c.String("filename") != "" {
+                                output("stream provided, ignoring filename option")
+                        }
 			output("starting stream")
 			go slackcat.addToStreamQ(lines)
-			go slackcat.processStreamQ(c.Bool("noop"), c.Bool("plain"))
+			go slackcat.processStreamQ(c.Bool("noop"), c.Bool("pre"))
 			go slackcat.trap()
 			select {}
-		} else {
-			filePath := writeTemp(lines)
-			defer os.Remove(filePath)
-			slackcat.postFile(filePath, fileName, c.Bool("noop"))
+		} else if c.String("filename") == "" {
+                        slackcat.postMsgs(lines, c.Bool("noop"), c.Bool("pre"))
 			os.Exit(0)
-		}
+                } else {
+                        if c.Bool("pre") {
+                                output("filename provided, ignoring preformat option")
+                        }
+                        filePath := writeTemp(lines)
+                        defer os.Remove(filePath)
+                        slackcat.postFile(filePath, fileName, c.Bool("noop"))
+                        os.Exit(0)
+                }
 	}
 
 	app.Run(os.Args)
