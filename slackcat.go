@@ -90,28 +90,38 @@ func (sc *SlackCat) addToStreamQ(lines chan string) {
 }
 
 //TODO: handle messages with length exceeding maximum for Slack chat
-func (sc *SlackCat) processStreamQ(noop bool, plain bool) {
+func (sc *SlackCat) processStreamQ(noop bool, pre bool) {
 	if !(sc.queue.isEmpty()) {
 		msglines := sc.queue.flush()
 		if noop {
 			output(fmt.Sprintf("skipped posting of %s message lines to %s", strconv.Itoa(len(msglines)), sc.channelName))
 		} else {
-			sc.postMsg(msglines, plain)
+			sc.postMsg(msglines, pre)
 		}
 	}
 	time.Sleep(3 * time.Second)
-	sc.processStreamQ(noop, plain)
+	sc.processStreamQ(noop, pre)
 }
 
-func (sc *SlackCat) postMsg(msglines []string, plain bool) {
-	fmtStr := "```%s```"
-	if plain {
-		fmtStr = "%s"
+func (sc *SlackCat) postMsg(msglines []string, pre bool) {
+        fmtStr := "%s"
+	if pre {
+                fmtStr = "```%s```"
 	}
 	msg := fmt.Sprintf(fmtStr, strings.Join(msglines, "\n"))
 	err := sc.api.ChatPostMessage(sc.channelId, msg, sc.opts)
 	failOnError(err, "", true)
 	output(fmt.Sprintf("posted %s message lines to %s", strconv.Itoa(len(msglines)), sc.channelName))
+}
+
+func (sc *SlackCat) postMsgs(msglines chan string, noop bool, pre bool) {
+        if noop {
+                output(fmt.Sprintf("skipped posting message lines to %s", sc.channelName))
+        } else {
+                for line := range msglines {
+                        sc.postMsg([]string{line}, pre)
+                }
+        }
 }
 
 func (sc *SlackCat) postFile(filePath, fileName string, noop bool) {
