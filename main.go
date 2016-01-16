@@ -93,6 +93,15 @@ func main() {
 		lines := make(chan string)
 		go readIn(lines, c.Bool("tee"))
 
+                if len(c.Args()) > 0 {
+                        if c.Bool("noop") {
+                                output(fmt.Sprintf("skipped posting messages to %s", c.String("channel")))
+                        } else {
+                                slackecho.postMsg(c.Args(), c.Bool("pre"), " ")
+                        }
+                        os.Exit(0)
+                }
+
 		if c.Bool("stream") {
 			output("starting stream")
 			go slackecho.addToStreamQ(lines)

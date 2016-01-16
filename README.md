@@ -22,18 +22,16 @@ echo '<your-slack-token>' > ~/.slackcat
 Your new config file will work for Slackcat and Slackecho.
 
 ## Usage
+Echo a string as a message:
+```bash
+$ slackecho --channel general Good morning!
+*slackecho* posted 1 message lines to general
+```
+
 Pipe command output as a message:
 ```bash
 $ echo -e "hi\nthere" | slackecho --channel general
 *slackecho* posted 2 message lines to general
-```
-
-Stream input continously as a message:
-```bash
-$ tail -F -n0 /path/to/log | slackecho --channel general --stream
-*slackecho* posted 5 message lines to general
-*slackecho* posted 2 message lines to general
-...
 ```
 
 Post a message as preformatted text:
@@ -42,6 +40,13 @@ $ echo -e "print('Hello world!')" | slackecho --pre --channel general
 *slackecho* posted 1 message lines to general
 ```
 
+Stream input continously as preformatted text:
+```bash
+$ tail -F -n0 /path/to/log | slackecho --channel general --stream --pre
+*slackecho* posted 5 message lines to general
+*slackecho* posted 2 message lines to general
+...
+```
 
 ## Options
 

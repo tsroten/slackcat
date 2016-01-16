@@ -96,22 +96,22 @@ func (se *SlackEcho) processStreamQ(noop bool, pre bool) {
 		if noop {
 			output(fmt.Sprintf("skipped posting of %s message lines to %s", strconv.Itoa(len(msglines)), se.channelName))
 		} else {
-			se.postMsg(msglines, pre)
+			se.postMsg(msglines, pre, "\n")
 		}
 	}
 	time.Sleep(3 * time.Second)
 	se.processStreamQ(noop, pre)
 }
 
-func (se *SlackEcho) postMsg(msglines []string, pre bool) {
+func (se *SlackEcho) postMsg(msglines []string, pre bool, sep string){
         fmtStr := "%s"
 	if pre {
                 fmtStr = "```%s```"
 	}
-	msg := fmt.Sprintf(fmtStr, strings.Join(msglines, "\n"))
+	msg := fmt.Sprintf(fmtStr, strings.Join(msglines, sep))
 	err := se.api.ChatPostMessage(se.channelId, msg, se.opts)
 	failOnError(err, "", true)
-	output(fmt.Sprintf("posted %s message lines to %s", strconv.Itoa(len(msglines)), se.channelName))
+	output(fmt.Sprintf("posted %s message lines to %s", strconv.Itoa(strings.Count(msg, "\n") + 1), se.channelName))
 }
 
 func (se *SlackEcho) postLines(lines chan string, noop bool, pre bool) {
@@ -120,8 +120,8 @@ func (se *SlackEcho) postLines(lines chan string, noop bool, pre bool) {
                 msglines = append(msglines, line)
         }
         if noop {
-                output(fmt.Sprintf("skipped %s posting message lines to %s", strconv.Itoa(len(msglines)), se.channelName))
+                output(fmt.Sprintf("skipped posting of %s message lines to %s", strconv.Itoa(len(msglines)), se.channelName))
         } else {
-                se.postMsg(msglines, pre)
+                se.postMsg(msglines, pre, "\n")
         }
 }
