@@ -25,7 +25,7 @@ Your new config file will work for Slackcat and Slackecho.
 Pipe command output as a message:
 ```bash
 $ echo -e "hi\nthere" | slackecho --channel general
-*slackecho* posted a message to general
+*slackecho* posted 2 message lines to general
 ```
 
 Stream input continously as a message:

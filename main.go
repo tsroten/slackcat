@@ -100,7 +100,7 @@ func main() {
 			go slackecho.trap()
 			select {}
                 } else {
-                        slackecho.postMsgs(lines, c.Bool("noop"), c.Bool("pre"))
+                        slackecho.postLines(lines, c.Bool("noop"), c.Bool("pre"))
 			os.Exit(0)
                 }
 	}

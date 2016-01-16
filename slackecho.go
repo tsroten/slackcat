@@ -114,12 +114,14 @@ func (se *SlackEcho) postMsg(msglines []string, pre bool) {
 	output(fmt.Sprintf("posted %s message lines to %s", strconv.Itoa(len(msglines)), se.channelName))
 }
 
-func (se *SlackEcho) postMsgs(msglines chan string, noop bool, pre bool) {
+func (se *SlackEcho) postLines(lines chan string, noop bool, pre bool) {
+        msglines := []string{}
+        for line := range lines {
+                msglines = append(msglines, line)
+        }
         if noop {
-                output(fmt.Sprintf("skipped posting message lines to %s", se.channelName))
+                output(fmt.Sprintf("skipped %s posting message lines to %s", strconv.Itoa(len(msglines)), se.channelName))
         } else {
-                for line := range msglines {
-                        se.postMsg([]string{line}, pre)
-                }
+                se.postMsg(msglines, pre)
         }
 }
