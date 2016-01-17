@@ -6,7 +6,7 @@ It is forked from, and designed to complement, [Slackcat](https://github.com/vek
 
 ## Configuration
 
-If you already use [Slackcat](https://github.com/vektorlab/slackcat)Slackcat, you're already configured. If not, download Slackcat and follow the instructions. Your new config file will work for Slackcat and Slackecho.
+If you already use [Slackcat](https://github.com/vektorlab/slackcat), you're already configured. If not, download Slackcat and follow the instructions. Your new config file will work for Slackcat and Slackecho.
 
 ## Usage
 Echo a string as a message:
