@@ -6,20 +6,7 @@ It is forked from, and designed to complement, [Slackcat](https://github.com/vek
 
 ## Configuration
 
-If you already use Slackcat, you're already configured.
-
-If not, download Slackcat and generate a new Slack token with:
-```bash
-slackcat --configure
-```
-A new browser window will be opened for you to confirm the request via Slack, and you'll be returned a token.
-
-Create a config file and you're ready to go!
-```bash
-echo '<your-slack-token>' > ~/.slackcat
-```
-
-Your new config file will work for Slackcat and Slackecho.
+If you already use [Slackcat](https://github.com/vektorlab/slackcat)Slackcat, you're already configured. If not, download Slackcat and follow the instructions. Your new config file will work for Slackcat and Slackecho.
 
 ## Usage
 Echo a string as a message:
