@@ -8,9 +8,9 @@ It is forked from, and designed to complement, [Slackcat](https://github.com/vek
 
 If you already use Slackcat, you're already configured.
 
-If not, generate a new Slack token with:
+If not, download Slackcat and generate a new Slack token with:
 ```bash
-slackecho --configure
+slackcat --configure
 ```
 A new browser window will be opened for you to confirm the request via Slack, and you'll be returned a token.
 

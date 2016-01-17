@@ -65,10 +65,6 @@ func main() {
 			Name:  "noop",
 			Usage: "Skip posting message to Slack. Useful for testing",
 		},
-		cli.BoolFlag{
-			Name:  "configure",
-			Usage: "Configure Slackecho via oauth",
-		},
 		cli.StringFlag{
 			Name:  "channel, c",
 			Usage: "Slack channel or group to post to",
@@ -76,11 +72,6 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) {
-		if c.Bool("configure") {
-			configureOA()
-			os.Exit(0)
-		}
-
 		token := readConfig()
 
 		if c.String("channel") == "" {
