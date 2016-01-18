@@ -43,5 +43,4 @@ Option | Description
 --stream, -s | Stream messages to Slack continuously
 --pre, -p | Write messages as preformatted text
 --noop | Skip posting message to Slack. Useful for testing
---configure | Configure Slackcat/Slackecho via oauth
 --channel, -c | Slack channel, group, or user to post to
