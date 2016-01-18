@@ -6,6 +6,7 @@ class Slackecho < Formula
   sha256 "e18db07eecffc180ec32d3c19378d2db0cb50dad09da695ea34d5ebafffaf53c"
 
   depends_on "go"
+  depends_on "slackcat"
 
   def install
     platform = `uname`.downcase.strip
