@@ -3,7 +3,7 @@ class Slackecho < Formula
   homepage "https://github.com/tsroten/slackecho"
   url "https://github.com/tsroten/slackecho/archive/v1.1.tar.gz"
   version "1.1"
-  sha256 "2d70f7cee38668fd94f5bf53f3333d38d63235f395795023981b220ac3dae23a"
+  sha256 "9705e3fde7dad407c88aec9cd6c888b5087d1a6d9a8d975bef8b6781ed939d9c"
 
   depends_on "go"
   depends_on "slackcat"
