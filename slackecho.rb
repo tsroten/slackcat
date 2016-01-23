@@ -1,9 +1,9 @@
 class Slackecho < Formula
   desc "Simple command-line utility to post messages to Slack."
   homepage "https://github.com/tsroten/slackecho"
-  url "https://github.com/tsroten/slackecho/archive/v1.0.tar.gz"
-  version "1.0"
-  sha256 "e18db07eecffc180ec32d3c19378d2db0cb50dad09da695ea34d5ebafffaf53c"
+  url "https://github.com/tsroten/slackecho/archive/v1.1.tar.gz"
+  version "1.1"
+  sha256 "2d70f7cee38668fd94f5bf53f3333d38d63235f395795023981b220ac3dae23a"
 
   depends_on "go"
   depends_on "slackcat"
@@ -16,7 +16,7 @@ class Slackecho < Formula
     end
 
     system "make"
-    bin.install "build/slackecho-1.0-#{platform}-amd64" => "slackecho"
+    bin.install "build/slackecho-1.1-#{platform}-amd64" => "slackecho"
 
     puts "Slackecho is installed. If you don't already have Slackcat,\n"
     puts "install and configure Slackcat with:"
