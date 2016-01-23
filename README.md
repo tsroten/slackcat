@@ -8,6 +8,8 @@ It is forked from, and designed to complement, [Slackcat](https://github.com/vek
 
 If you already use [Slackcat](https://github.com/vektorlab/slackcat), you're already configured. If not, download Slackcat and follow the instructions. Your new config file will work for Slackcat and Slackecho.
 
+For configuring multiple teams and default channels, see [Slackcat's Configuration Guide](https://github.com/vektorlab/slackcat/blob/master/docs/configuration-guide.md).
+
 ## Usage
 Echo a string as a message:
 ```bash
