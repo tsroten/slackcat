@@ -72,13 +72,17 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) {
-		token := readConfig()
+		config := readConfig()
 
-		if c.String("channel") == "" {
-			exitErr(fmt.Errorf("no channel provided!"))
-		}
+                team, channel, err := config.parseChannelOpt(c.String("channel"))
+                failOnError(err, "", true)
 
-		slackecho, err := newSlackEcho(token, c.String("channel"))
+                token := config.teams[team]
+                if token == "" {
+                        exitErr(fmt.Errorf("no such team: %s", team))
+                }
+
+                slackecho, err := newSlackEcho(token, channel)
 		failOnError(err, "Slack API Error", true)
 
 		lines := make(chan string)
