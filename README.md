@@ -1,4 +1,6 @@
 # slackecho
+**This project is no longer maintained.**
+
 Slackecho is a simple commandline utility to post messages to Slack.
 
 It is forked from, and designed to complement, [Slackcat](https://github.com/vektorlab/slackcat).
